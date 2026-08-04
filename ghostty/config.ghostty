@@ -1,0 +1,143 @@
+# Byobu-style keybindings for Ghostty
+#
+# Concept mapping:
+#   byobu window  -> Ghostty tab
+#   byobu pane    -> Ghostty split
+#   byobu session -> Ghostty window
+#
+# "Modifier-safe" variant: every binding carries Ctrl, Shift, or Alt so that
+# bare F1-F12 pass straight through to TUI apps (vim, htop, mc, nano, ...).
+
+# ---------------------------------------------------------------------------
+# Appearance: byobu always shows its window list, along the bottom
+# ---------------------------------------------------------------------------
+
+window-show-tab-bar = always
+gtk-tabs-location = bottom
+
+# ---------------------------------------------------------------------------
+# Tabs  (byobu "windows")
+# ---------------------------------------------------------------------------
+
+# F2 - new-window
+keybind = ctrl+shift+f2=new_tab
+
+# F3 / F4 - previous-window / next-window
+keybind = ctrl+f3=previous_tab
+keybind = ctrl+f4=next_tab
+
+# M-Left / M-Right - previous-window / next-window
+keybind = alt+arrow_left=previous_tab
+keybind = alt+arrow_right=next_tab
+
+# C-S-F3 / C-S-F4 - swap-window -t :-1 / :+1
+keybind = ctrl+shift+f3=move_tab:-1
+keybind = ctrl+shift+f4=move_tab:1
+
+# F8 - rename-window
+keybind = ctrl+f8=prompt_tab_title
+
+# ---------------------------------------------------------------------------
+# Splits  (byobu "panes")
+# ---------------------------------------------------------------------------
+
+# C-F2 - split-window -h  (side by side)
+keybind = ctrl+f2=new_split:right
+
+# S-F2 - split-window -v  (stacked)
+keybind = shift+f2=new_split:down
+
+# S-F3 / S-F4 - select-pane -t :.- / :.+
+keybind = shift+f3=goto_split:previous
+keybind = shift+f4=goto_split:next
+
+# S-Up / S-Down / S-Left / S-Right - select-pane -U/-D/-L/-R
+keybind = shift+arrow_up=goto_split:up
+keybind = shift+arrow_down=goto_split:down
+keybind = shift+arrow_left=goto_split:left
+keybind = shift+arrow_right=goto_split:right
+
+# M-S-arrows - resize-pane
+keybind = alt+shift+arrow_up=resize_split:up,10
+keybind = alt+shift+arrow_down=resize_split:down,10
+keybind = alt+shift+arrow_left=resize_split:left,10
+keybind = alt+shift+arrow_right=resize_split:right,10
+
+# S-F11 - resize-pane -Z  (zoom)
+keybind = shift+f11=toggle_split_zoom
+
+# S-F8 - next-layout  (nearest analog Ghostty has)
+keybind = shift+f8=equalize_splits
+
+# C-F6 - kill-pane
+keybind = ctrl+f6=close_surface
+
+# ---------------------------------------------------------------------------
+# Windows  (byobu "sessions")
+# ---------------------------------------------------------------------------
+
+# C-S-F2 - new-session  (ctrl+shift+n is Ghostty's default, kept as-is)
+
+# M-Up / M-Down - switch-client -p / -n
+keybind = alt+arrow_up=goto_window:previous
+keybind = alt+arrow_down=goto_window:next
+
+# C-F8 - rename-session
+keybind = ctrl+shift+f8=prompt_surface_title
+
+# ---------------------------------------------------------------------------
+# Scrollback and clipboard
+# ---------------------------------------------------------------------------
+
+# F7 - copy-mode  (Ghostty has no copy-mode; see notes at the bottom)
+keybind = ctrl+f7=scroll_page_up
+
+# M-PPage / M-NPage - copy-mode + page up/down
+keybind = alt+page_up=scroll_page_up
+keybind = alt+page_down=scroll_page_down
+
+# S-F7 - capture-pane to a file
+keybind = shift+f7=write_scrollback_file:open,plain
+
+# M-IC - paste-buffer
+keybind = alt+insert=paste_from_selection
+
+# ---------------------------------------------------------------------------
+# Config and menus
+# ---------------------------------------------------------------------------
+
+# F5 - reload byobu profile
+keybind = ctrl+f5=reload_config
+
+# F9 - byobu-config menu
+keybind = ctrl+f9=toggle_command_palette
+
+# ---------------------------------------------------------------------------
+# Kept from Ghostty's defaults (no byobu equivalent needed)
+# ---------------------------------------------------------------------------
+#
+#   ctrl+shift+n        new_window          (byobu C-S-F2, new-session)
+#   alt+1 .. alt+8      goto_tab:N          (tmux prefix + digit)
+#   alt+9               last_tab
+#   ctrl+shift+f        start_search        (the practical replacement for F7)
+#   ctrl+shift+c / v    copy / paste
+#
+# ---------------------------------------------------------------------------
+# Byobu bindings with no Ghostty equivalent
+# ---------------------------------------------------------------------------
+#
+#   C-F3 / C-F4     swap-pane            - no "swap split" action exists.
+#                                          Those keys are reused above for
+#                                          prev/next tab, so nothing is lost.
+#   M-F11           break-pane           - cannot promote a split to its own tab
+#   C-F11           join-pane            - nor pull a tab back in as a split
+#   M-F9            synchronize-panes    - no input broadcast
+#   S-F9 / C-F9     send to all panes/windows
+#   F6              detach               - Ghostty has no server/attach model.
+#                                          Survivable sessions are the one
+#                                          reason to still reach for tmux.
+#   F7              copy-mode            - no vi-style scrollback navigation;
+#                                          use ctrl+shift+f to search instead.
+#   F1              byobu help           - byobu-internal
+#   C-a             byobu escape key     - byobu-internal
+#   S-F12           toggle F-key bindings - unnecessary: bare F-keys are free
